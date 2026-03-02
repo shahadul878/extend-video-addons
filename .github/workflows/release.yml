@@ -64,12 +64,16 @@ jobs:
       # -----------------------------------------------------------------------
       - name: Build plugin zip
         id: build
+        env:
+          PLUGIN_SLUG: extend-video-addons
         run: |
+          set -e
           VERSION="${{ steps.version.outputs.version }}"
-          ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
+          ZIP_NAME="extend-video-addons-${VERSION}.zip"
+          BUILD_DIR="build/extend-video-addons"
           
-          # Create build dir so rsync has a destination
-          mkdir -p build/${PLUGIN_SLUG}
+          # Create build dir (parent and leaf) so rsync has a destination
+          mkdir -p "$BUILD_DIR"
           
           # Copy plugin files into build dir (exclude dev/version control)
           rsync -a \
@@ -81,11 +85,11 @@ jobs:
             --exclude='vendor' \
             --exclude='*.log' \
             --exclude='.DS_Store' \
-            ./ build/${PLUGIN_SLUG}/
+            ./ "$BUILD_DIR/"
           
           # Create zip so that unzip gives extend-video-addons/ folder
           cd build
-          zip -r "../${ZIP_NAME}" ${PLUGIN_SLUG}
+          zip -r "../${ZIP_NAME}" extend-video-addons
           cd ..
           
           echo "zip_name=${ZIP_NAME}" >> $GITHUB_OUTPUT
