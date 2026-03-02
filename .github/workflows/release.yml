@@ -68,6 +68,9 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
           
+          # Create build dir so rsync has a destination
+          mkdir -p build/${PLUGIN_SLUG}
+          
           # Copy plugin files into build dir (exclude dev/version control)
           rsync -a \
             --exclude='.git' \
