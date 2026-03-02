@@ -1,0 +1,128 @@
+# =============================================================================
+# Extend Video Addons - Auto Release & Tag
+# =============================================================================
+# Creates a GitHub Release with a plugin zip when you push a version tag.
+#
+# Usage:
+#   1. Update version in extend-video-addons.php and readme.txt (Stable tag).
+#   2. Update CHANGELOG.md for the new version.
+#   3. Commit, then create and push a tag:
+#      git tag -a v1.0.0 -m "Release 1.0.0"
+#      git push origin v1.0.0
+#   4. This workflow runs and publishes the release with the zip asset.
+#
+# Or run manually: Actions → Release → Run workflow (optional: set version).
+# =============================================================================
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'   # e.g. v1.0.0, v1.0.1, v2.0.0-beta.1
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (e.g. 1.0.0). Leave empty to use latest tag.'
+        required: false
+        type: string
+
+env:
+  PLUGIN_SLUG: extend-video-addons
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # -----------------------------------------------------------------------
+      # Checkout and resolve version
+      # -----------------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set version from tag or input
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "tag=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            REF="${GITHUB_REF#refs/tags/}"
+            echo "tag=${REF}" >> $GITHUB_OUTPUT
+            echo "version=${REF#v}" >> $GITHUB_OUTPUT
+          fi
+          echo "Resolved version: ${{ steps.version.outputs.version }}"
+
+      # -----------------------------------------------------------------------
+      # Build plugin zip (installable structure: extend-video-addons/ inside zip)
+      # -----------------------------------------------------------------------
+      - name: Build plugin zip
+        id: build
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
+          
+          # Copy plugin files into build dir (exclude dev/version control)
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='*.zip' \
+            --exclude='node_modules' \
+            --exclude='vendor' \
+            --exclude='*.log' \
+            --exclude='.DS_Store' \
+            ./ build/${PLUGIN_SLUG}/
+          
+          # Create zip so that unzip gives extend-video-addons/ folder
+          cd build
+          zip -r "../${ZIP_NAME}" ${PLUGIN_SLUG}
+          cd ..
+          
+          echo "zip_name=${ZIP_NAME}" >> $GITHUB_OUTPUT
+          ls -la "${ZIP_NAME}"
+
+      # -----------------------------------------------------------------------
+      # Generate release notes from CHANGELOG
+      # -----------------------------------------------------------------------
+      - name: Generate release notes
+        id: notes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ steps.version.outputs.tag }}"
+          BODY=""
+          
+          if [ -f CHANGELOG.md ]; then
+            BODY=$(sed -n "/## \[${VERSION}\]/,/^## \[/p" CHANGELOG.md | sed '$d' || true)
+          fi
+          
+          if [ -z "$BODY" ]; then
+            BODY="**Extend Video Addons** ${TAG}
+
+          See [readme.txt](https://github.com/${{ github.repository }}/blob/main/readme.txt) for changelog."
+          fi
+          
+          echo "$BODY" > release_notes.md
+          echo "Release notes generated."
+
+      # -----------------------------------------------------------------------
+      # Create GitHub Release with zip asset
+      # -----------------------------------------------------------------------
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.tag }}
+          body_path: release_notes.md
+          files: ${{ steps.build.outputs.zip_name }}
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

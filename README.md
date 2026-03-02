@@ -71,6 +71,21 @@ Access **Settings** → **Extend Video Addons** to:
 - **Widget:** Replaces Elementor `video` widget
 - **Hooks:** `elementor/widgets/register` (priority 99)
 
+## Releasing
+
+Releases are built and published automatically via [GitHub Actions](.github/workflows/release.yml).
+
+1. Update version in `extend-video-addons.php` and `readme.txt` (Stable tag).
+2. Update [CHANGELOG.md](CHANGELOG.md) for the new version.
+3. Commit, then create and push an annotated tag:
+   ```bash
+   git tag -a v1.0.0 -m "Release 1.0.0"
+   git push origin v1.0.0
+   ```
+4. The workflow runs on tag push, builds `extend-video-addons-{version}.zip`, and creates a [GitHub Release](https://github.com/shahadul878/extend-video-addons/releases) with the zip attached.
+
+You can also run **Actions → Release → Run workflow** and optionally enter a version.
+
 ## Changelog
 
 ### 1.0.0
