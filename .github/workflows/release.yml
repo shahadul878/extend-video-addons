@@ -85,6 +85,8 @@ jobs:
             --exclude='vendor' \
             --exclude='*.log' \
             --exclude='.DS_Store' \
+            --exclude='CHANGELOG.md' \
+            --exclude='README.md' \
             ./ "$BUILD_DIR/"
           
           # Create zip so that unzip gives extend-video-addons/ folder
