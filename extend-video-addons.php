@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Extend Video Addons
- * Plugin URI: https://github.com/shahadul878
+ * Plugin URI: https://github.com/shahadul878/extend-video-addons
  * Description: Enhances Elementor video widget with automatic video source detection from URL patterns. Works with dynamic content and supports YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted videos.
  * Version: 1.0.0
  * Author: H M Shahadul Islam
