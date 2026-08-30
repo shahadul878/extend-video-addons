@@ -1,4 +1,4 @@
-# Extend Video Addons
+# Extend Video Add-ons for Elementor
 
 Enhances the Elementor video widget with automatic video source detection. Paste any supported video URL and the plugin automatically detects the platform—YouTube, Vimeo, Dailymotion, VideoPress, or self-hosted.
 
@@ -12,8 +12,8 @@ Enhances the Elementor video widget with automatic video source detection. Paste
 - **Auto Source Detection** – Automatically detects video platform from URL patterns
 - **Multiple Platform Support** – YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted videos
 - **Dynamic Content Support** – Works with Elementor dynamic content (ACF fields, post meta)
-- **Seamless Integration** – Replaces the original Elementor video widget with enhanced version
-- **Backward Compatible** – All original Elementor video widget features preserved
+- **Non-invasive** – Extends Elementor's existing Video widget; does not replace it
+- **Backward Compatible** – Existing Video widgets and original Elementor features continue to work
 
 ## Supported Video Platforms
 
@@ -36,7 +36,7 @@ Enhances the Elementor video widget with automatic video source detection. Paste
 1. Upload the `extend-video-addons` folder to `/wp-content/plugins/`
 2. Activate the plugin through **Plugins** → **Add New** → **Activate**
 3. Ensure Elementor is installed and activated
-4. Configure options in **Settings** → **Extend Video Addons** (optional)
+4. Configure options in **Settings** → **Extend Video Add-ons** (optional)
 
 ## Usage
 
@@ -51,7 +51,7 @@ You can always manually select YouTube, Vimeo, Dailymotion, VideoPress, or Self 
 
 ## Settings
 
-Access **Settings** → **Extend Video Addons** to:
+Access **Settings** → **Extend Video Add-ons** to:
 
 - View plugin information and compatibility status
 - Configure default behavior (optional)
@@ -68,8 +68,8 @@ Access **Settings** → **Extend Video Addons** to:
 
 - **Namespace:** `ExtendVideoAddons`
 - **Text Domain:** `extend-video-addons`
-- **Widget:** Replaces Elementor `video` widget
-- **Hooks:** `elementor/widgets/register` (priority 99)
+- **Widget:** Extends Elementor `video` widget via hooks (does not unregister it)
+- **Hooks:** `elementor/element/video/section_video/before_section_end`, `elementor/widget/before_render_content`
 
 ## Releasing
 
@@ -87,6 +87,12 @@ Releases are built and published automatically via [GitHub Actions](.github/work
 You can also run **Actions → Release → Run workflow** and optionally enter a version.
 
 ## Changelog
+
+### 1.0.1
+- WordPress.org compatibility (text domain, readme, Tested up to 7.1)
+- Auto Detect injected into the core Elementor Video widget instead of replacing it
+- Default source setting applied to new widgets
+- Localized editor detection messages
 
 ### 1.0.0
 - Initial release

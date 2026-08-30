@@ -1,5 +1,5 @@
 # =============================================================================
-# Extend Video Addons - Auto Release & Tag
+# Extend Video Add-ons for Elementor - Auto Release & Tag
 # =============================================================================
 # Creates a GitHub Release with a plugin zip when you push a version tag.
 #
@@ -112,7 +112,7 @@ jobs:
           fi
           
           if [ -z "$BODY" ]; then
-            BODY="**Extend Video Addons** ${TAG}
+            BODY="**Extend Video Add-ons for Elementor** ${TAG}
 
           See [readme.txt](https://github.com/${{ github.repository }}/blob/main/readme.txt) for changelog."
           fi

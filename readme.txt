@@ -1,27 +1,27 @@
-=== Extend Video Addons ===
+=== Extend Video Add-ons for Elementor ===
 
 Contributors: shahadul878
-Tags: elementor, video, youtube, vimeo, dailymotion, videopress, auto-detect, self-hosted
+Tags: elementor, video, youtube, vimeo, autodetection
 Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 1.0.0
+Tested up to: 7.1
+Stable tag: 1.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Enhances Elementor video widget with automatic video source detection from URL patterns. Supports YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted videos.
+Auto-detects YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted URLs in the Elementor Video widget.
 
 == Description ==
 
-Extend Video Addons adds an **Auto Detect** option to the Elementor video widget, so you can paste any supported video URL and the plugin will automatically detect the source. No need to manually select YouTube, Vimeo, or Self Hosted—just paste and go.
+Extend Video Add-ons for Elementor adds an **Auto Detect** option to Elementor's Video widget. Paste any supported video URL and the plugin identifies the source. You do not need to manually choose YouTube, Vimeo, or Self Hosted.
 
 = Features =
 
-* **Auto Source Detection** - Automatically detects video platform from URL patterns
+* **Auto Source Detection** - Automatically detects the video platform from URL patterns
 * **Multiple Platform Support** - YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted videos (.mp4, .webm, .ogg, .mov, etc.)
 * **Dynamic Content Support** - Works with Elementor dynamic content (ACF fields, post meta)
-* **Seamless Integration** - Replaces the original Elementor video widget with enhanced version
-* **Backward Compatible** - All original Elementor video widget features preserved
+* **Non-invasive** - Extends the existing Elementor Video widget; it does not replace it
+* **Backward Compatible** - Existing Video widgets and all original Elementor video features continue to work
 
 = Supported Video Platforms =
 
@@ -56,7 +56,7 @@ Yes. The plugin fully supports Elementor dynamic content. URLs from ACF fields, 
 
 = Will this affect my existing video widgets? =
 
-The plugin seamlessly replaces the Elementor video widget. Existing widgets continue to work. When editing, you'll see the new "Auto Detect" option in the Source dropdown.
+No. The plugin adds an Auto Detect option to Elementor's Video widget. Existing widgets keep working. When editing, you will see Auto Detect in the Source dropdown.
 
 == Screenshots ==
 
@@ -65,14 +65,20 @@ The plugin seamlessly replaces the Elementor video widget. Existing widgets cont
 
 == Changelog ==
 
+= 1.0.1 =
+* WordPress.org compatibility: text domain matches plugin slug
+* Extend Elementor's Video widget with hooks instead of replacing it
+* Update Tested up to WordPress 7.1
+* Localize editor detection messages
+* Apply the default source setting to new Video widgets
+
 = 1.0.0 =
 * Initial release
 * Auto source detection for Elementor video widget
 * Support for YouTube, Vimeo, Dailymotion, VideoPress, self-hosted
 * Dynamic content support
-* Direct render for auto-detected self-hosted videos
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-Initial release of Extend Video Addons.
+= 1.0.1 =
+WordPress.org compatibility update. Auto Detect now extends the core Elementor Video widget instead of replacing it.
