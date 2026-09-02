@@ -88,7 +88,7 @@ You can also run **Actions → Release → Run workflow** and optionally enter a
 
 ## Changelog
 
-### 1.0.2
+### 1.0.3
 - Text domain matches WordPress.org slug `extend-video-add-ons-for-elementor`
 
 ### 1.0.1

@@ -3,7 +3,7 @@
  * Plugin Name: Extend Video Add-ons for Elementor
  * Plugin URI: https://github.com/shahadul878/extend-video-addons
  * Description: Adds Auto Detect to the Elementor Video widget so YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted URLs are identified automatically.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: H M Shahadul Islam
  * Author URI: https://github.com/shahadul878
  * Text Domain: extend-video-add-ons-for-elementor
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'EXTEND_VIDEO_ADDONS_VERSION', '1.0.2' );
+define( 'EXTEND_VIDEO_ADDONS_VERSION', '1.0.3' );
 define( 'EXTEND_VIDEO_ADDONS_FILE', __FILE__ );
 define( 'EXTEND_VIDEO_ADDONS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'EXTEND_VIDEO_ADDONS_URL', plugin_dir_url( __FILE__ ) );
