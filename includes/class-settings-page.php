@@ -39,8 +39,8 @@ class Settings_Page {
 	 */
 	public function add_menu_page() {
 		add_options_page(
-			__( 'Extend Video Add-ons for Elementor', 'extend-video-addons' ),
-			__( 'Extend Video Add-ons', 'extend-video-addons' ),
+			__( 'Extend Video Add-ons for Elementor', 'extend-video-add-ons-for-elementor' ),
+			__( 'Extend Video Add-ons', 'extend-video-add-ons-for-elementor' ),
 			'manage_options',
 			'extend-video-addons',
 			array( $this, 'render_page' )
@@ -62,14 +62,14 @@ class Settings_Page {
 
 		add_settings_section(
 			'extend_video_addons_main_section',
-			__( 'General Settings', 'extend-video-addons' ),
+			__( 'General Settings', 'extend-video-add-ons-for-elementor' ),
 			array( $this, 'render_main_section' ),
 			'extend-video-addons'
 		);
 
 		add_settings_field(
 			'extend_video_addons_default_source',
-			__( 'Default Video Source', 'extend-video-addons' ),
+			__( 'Default Video Source', 'extend-video-add-ons-for-elementor' ),
 			array( $this, 'render_default_source_field' ),
 			'extend-video-addons',
 			'extend_video_addons_main_section',
@@ -103,7 +103,7 @@ class Settings_Page {
 	 * Render main section description.
 	 */
 	public function render_main_section() {
-		echo '<p>' . esc_html__( 'Configure default behavior for the Elementor Video widget Auto Detect option.', 'extend-video-addons' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure default behavior for the Elementor Video widget Auto Detect option.', 'extend-video-add-ons-for-elementor' ) . '</p>';
 	}
 
 	/**
@@ -114,14 +114,14 @@ class Settings_Page {
 		$name  = get_option_name() . '[default_source]';
 		?>
 		<select id="extend_video_addons_default_source" name="<?php echo esc_attr( $name ); ?>">
-			<option value="auto" <?php selected( $value, 'auto' ); ?>><?php esc_html_e( 'Auto Detect (Recommended)', 'extend-video-addons' ); ?></option>
-			<option value="youtube" <?php selected( $value, 'youtube' ); ?>><?php esc_html_e( 'YouTube', 'extend-video-addons' ); ?></option>
-			<option value="vimeo" <?php selected( $value, 'vimeo' ); ?>><?php esc_html_e( 'Vimeo', 'extend-video-addons' ); ?></option>
-			<option value="dailymotion" <?php selected( $value, 'dailymotion' ); ?>><?php esc_html_e( 'Dailymotion', 'extend-video-addons' ); ?></option>
-			<option value="videopress" <?php selected( $value, 'videopress' ); ?>><?php esc_html_e( 'VideoPress', 'extend-video-addons' ); ?></option>
-			<option value="hosted" <?php selected( $value, 'hosted' ); ?>><?php esc_html_e( 'Self Hosted', 'extend-video-addons' ); ?></option>
+			<option value="auto" <?php selected( $value, 'auto' ); ?>><?php esc_html_e( 'Auto Detect (Recommended)', 'extend-video-add-ons-for-elementor' ); ?></option>
+			<option value="youtube" <?php selected( $value, 'youtube' ); ?>><?php esc_html_e( 'YouTube', 'extend-video-add-ons-for-elementor' ); ?></option>
+			<option value="vimeo" <?php selected( $value, 'vimeo' ); ?>><?php esc_html_e( 'Vimeo', 'extend-video-add-ons-for-elementor' ); ?></option>
+			<option value="dailymotion" <?php selected( $value, 'dailymotion' ); ?>><?php esc_html_e( 'Dailymotion', 'extend-video-add-ons-for-elementor' ); ?></option>
+			<option value="videopress" <?php selected( $value, 'videopress' ); ?>><?php esc_html_e( 'VideoPress', 'extend-video-add-ons-for-elementor' ); ?></option>
+			<option value="hosted" <?php selected( $value, 'hosted' ); ?>><?php esc_html_e( 'Self Hosted', 'extend-video-add-ons-for-elementor' ); ?></option>
 		</select>
-		<p class="description"><?php esc_html_e( 'Default source when adding a new Video widget. Auto Detect identifies the platform from the URL.', 'extend-video-addons' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Default source when adding a new Video widget. Auto Detect identifies the platform from the URL.', 'extend-video-add-ons-for-elementor' ); ?></p>
 		<?php
 	}
 
@@ -167,7 +167,7 @@ class Settings_Page {
 				<?php
 				settings_fields( self::OPTION_GROUP );
 				do_settings_sections( 'extend-video-addons' );
-				submit_button( __( 'Save Settings', 'extend-video-addons' ) );
+				submit_button( __( 'Save Settings', 'extend-video-add-ons-for-elementor' ) );
 				?>
 			</form>
 
@@ -186,20 +186,20 @@ class Settings_Page {
 		$php_version      = PHP_VERSION;
 		?>
 		<div class="extend-video-addons-card">
-			<h2><?php esc_html_e( 'Compatibility Status', 'extend-video-addons' ); ?></h2>
+			<h2><?php esc_html_e( 'Compatibility Status', 'extend-video-add-ons-for-elementor' ); ?></h2>
 			<ul class="extend-video-addons-status-list">
 				<li>
 					<?php if ( $elementor_active ) : ?>
-						<span class="extend-video-addons-status-ok">&#10003;</span> <?php esc_html_e( 'Elementor: Active', 'extend-video-addons' ); ?>
+						<span class="extend-video-addons-status-ok">&#10003;</span> <?php esc_html_e( 'Elementor: Active', 'extend-video-add-ons-for-elementor' ); ?>
 					<?php else : ?>
-						<span class="extend-video-addons-status-missing">&#10007;</span> <?php esc_html_e( 'Elementor: Not active (required)', 'extend-video-addons' ); ?>
+						<span class="extend-video-addons-status-missing">&#10007;</span> <?php esc_html_e( 'Elementor: Not active (required)', 'extend-video-add-ons-for-elementor' ); ?>
 					<?php endif; ?>
 				</li>
 				<li>
 					<?php
 					printf(
 						/* translators: %s: WordPress version number */
-						esc_html__( 'WordPress: %s', 'extend-video-addons' ),
+						esc_html__( 'WordPress: %s', 'extend-video-add-ons-for-elementor' ),
 						esc_html( $wp_version )
 					);
 					?>
@@ -208,7 +208,7 @@ class Settings_Page {
 					<?php
 					printf(
 						/* translators: %s: PHP version number */
-						esc_html__( 'PHP: %s', 'extend-video-addons' ),
+						esc_html__( 'PHP: %s', 'extend-video-add-ons-for-elementor' ),
 						esc_html( $php_version )
 					);
 					?>
@@ -217,7 +217,7 @@ class Settings_Page {
 					<?php
 					printf(
 						/* translators: %s: plugin version number */
-						esc_html__( 'Plugin Version: %s', 'extend-video-addons' ),
+						esc_html__( 'Plugin Version: %s', 'extend-video-add-ons-for-elementor' ),
 						esc_html( EXTEND_VIDEO_ADDONS_VERSION )
 					);
 					?>
@@ -233,12 +233,12 @@ class Settings_Page {
 	private function render_about_section() {
 		?>
 		<div class="extend-video-addons-card">
-			<h2><?php esc_html_e( 'About the Author', 'extend-video-addons' ); ?></h2>
+			<h2><?php esc_html_e( 'About the Author', 'extend-video-add-ons-for-elementor' ); ?></h2>
 			<p><strong><?php echo esc_html( 'H M Shahadul Islam' ); ?></strong></p>
-			<p><?php esc_html_e( 'WordPress and Elementor plugin developer. This plugin enhances the Elementor Video widget with automatic source detection.', 'extend-video-addons' ); ?></p>
+			<p><?php esc_html_e( 'WordPress and Elementor plugin developer. This plugin enhances the Elementor Video widget with automatic source detection.', 'extend-video-add-ons-for-elementor' ); ?></p>
 			<div class="extend-video-addons-author-links">
-				<a href="https://github.com/shahadul878" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'GitHub', 'extend-video-addons' ); ?></a>
-				<a href="https://github.com/shahadul878/extend-video-addons" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Plugin Repository', 'extend-video-addons' ); ?></a>
+				<a href="https://github.com/shahadul878" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'GitHub', 'extend-video-add-ons-for-elementor' ); ?></a>
+				<a href="https://github.com/shahadul878/extend-video-addons" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Plugin Repository', 'extend-video-add-ons-for-elementor' ); ?></a>
 			</div>
 		</div>
 		<?php

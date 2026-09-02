@@ -3,10 +3,10 @@
  * Plugin Name: Extend Video Add-ons for Elementor
  * Plugin URI: https://github.com/shahadul878/extend-video-addons
  * Description: Adds Auto Detect to the Elementor Video widget so YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted URLs are identified automatically.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: H M Shahadul Islam
  * Author URI: https://github.com/shahadul878
- * Text Domain: extend-video-addons
+ * Text Domain: extend-video-add-ons-for-elementor
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.4
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'EXTEND_VIDEO_ADDONS_VERSION', '1.0.1' );
+define( 'EXTEND_VIDEO_ADDONS_VERSION', '1.0.2' );
 define( 'EXTEND_VIDEO_ADDONS_FILE', __FILE__ );
 define( 'EXTEND_VIDEO_ADDONS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'EXTEND_VIDEO_ADDONS_URL', plugin_dir_url( __FILE__ ) );
@@ -76,9 +76,9 @@ function admin_notice_missing_elementor() {
 
 	$message = sprintf(
 		/* translators: 1: Plugin name, 2: Elementor */
-		esc_html__( '%1$s requires %2$s to be installed and activated.', 'extend-video-addons' ),
-		'<strong>' . esc_html__( 'Extend Video Add-ons for Elementor', 'extend-video-addons' ) . '</strong>',
-		'<strong>' . esc_html__( 'Elementor', 'extend-video-addons' ) . '</strong>'
+		esc_html__( '%1$s requires %2$s to be installed and activated.', 'extend-video-add-ons-for-elementor' ),
+		'<strong>' . esc_html__( 'Extend Video Add-ons for Elementor', 'extend-video-add-ons-for-elementor' ) . '</strong>',
+		'<strong>' . esc_html__( 'Elementor', 'extend-video-add-ons-for-elementor' ) . '</strong>'
 	);
 
 	printf( '<div class="notice notice-error"><p>%s</p></div>', wp_kses_post( $message ) );
@@ -119,8 +119,8 @@ function enqueue_editor_scripts() {
 		array(
 			'i18n' => array(
 				/* translators: %s: detected video platform name (youtube, vimeo, etc.) */
-				'detected'     => __( 'Video source detected: %s', 'extend-video-addons' ),
-				'undetectable' => __( 'Unable to detect video source. Please select manually.', 'extend-video-addons' ),
+				'detected'     => __( 'Video source detected: %s', 'extend-video-add-ons-for-elementor' ),
+				'undetectable' => __( 'Unable to detect video source. Please select manually.', 'extend-video-add-ons-for-elementor' ),
 			),
 		)
 	);

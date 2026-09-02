@@ -1,0 +1,76 @@
+# Files and directories excluded from WordPress.org / GitHub release zips.
+# Used by .github/workflows/release.yml and git archive (.gitattributes).
+
+# Version control
+.git
+.github
+.gitignore
+.gitattributes
+.svn
+.svnignore
+
+# This file
+.distignore
+
+# WordPress.org SVN assets (banners, icons, screenshots) — deploy to /assets, not trunk
+.wordpress-org
+
+# IDE / OS
+.idea
+.vscode
+*.sublime-*
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.bak
+*.tmp
+
+# Dev config
+.editorconfig
+.eslintignore
+.eslintrc
+.eslintrc.js
+.eslintrc.json
+.stylelintignore
+.stylelintrc
+.prettierrc
+.phpcs.xml
+.phpcs.xml.dist
+phpcs.xml
+phpcs.xml.dist
+phpunit.xml
+phpunit.xml.dist
+phpstan.neon
+phpstan.neon.dist
+composer.json
+composer.lock
+package.json
+package-lock.json
+yarn.lock
+webpack.config.js
+Gruntfile.js
+gulpfile.js
+postcss.config.js
+wp-cli.local.yml
+
+# Dev directories
+node_modules
+vendor
+tests
+bin
+logs
+build
+.husky
+
+# Docs kept on GitHub only (readme.txt ships to WordPress.org)
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE.md
+
+# Archives and logs
+*.zip
+*.tar.gz
+*.sql
+*.log

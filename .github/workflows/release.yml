@@ -75,18 +75,10 @@ jobs:
           # Create build dir (parent and leaf) so rsync has a destination
           mkdir -p "$BUILD_DIR"
           
-          # Copy plugin files into build dir (exclude dev/version control)
+          # Copy plugin files into build dir using .distignore
           rsync -a \
+            --exclude-from='.distignore' \
             --exclude='.git' \
-            --exclude='.github' \
-            --exclude='.gitignore' \
-            --exclude='*.zip' \
-            --exclude='node_modules' \
-            --exclude='vendor' \
-            --exclude='*.log' \
-            --exclude='.DS_Store' \
-            --exclude='CHANGELOG.md' \
-            --exclude='README.md' \
             ./ "$BUILD_DIR/"
           
           # Create zip so that unzip gives extend-video-addons/ folder

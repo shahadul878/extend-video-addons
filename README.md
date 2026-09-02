@@ -67,7 +67,7 @@ Access **Settings** → **Extend Video Add-ons** to:
 ## Technical Details
 
 - **Namespace:** `ExtendVideoAddons`
-- **Text Domain:** `extend-video-addons`
+- **Text Domain:** `extend-video-add-ons-for-elementor`
 - **Widget:** Extends Elementor `video` widget via hooks (does not unregister it)
 - **Hooks:** `elementor/element/video/section_video/before_section_end`, `elementor/widget/before_render_content`
 
@@ -87,6 +87,9 @@ Releases are built and published automatically via [GitHub Actions](.github/work
 You can also run **Actions → Release → Run workflow** and optionally enter a version.
 
 ## Changelog
+
+### 1.0.2
+- Text domain matches WordPress.org slug `extend-video-add-ons-for-elementor`
 
 ### 1.0.1
 - WordPress.org compatibility (text domain, readme, Tested up to 7.1)

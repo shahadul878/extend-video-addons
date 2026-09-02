@@ -66,7 +66,7 @@ class Video_Widget_Enhancer {
 			$element->update_control(
 				'video_type',
 				array(
-					'options' => array( 'auto' => esc_html__( 'Auto Detect', 'extend-video-addons' ) ) + $options,
+					'options' => array( 'auto' => esc_html__( 'Auto Detect', 'extend-video-add-ons-for-elementor' ) ) + $options,
 					'default' => get_default_video_source(),
 				)
 			);
@@ -86,7 +86,7 @@ class Video_Widget_Enhancer {
 		$element->add_control(
 			'auto_url',
 			array(
-				'label'       => esc_html__( 'Link', 'extend-video-addons' ),
+				'label'       => esc_html__( 'Link', 'extend-video-add-ons-for-elementor' ),
 				'type'        => Controls_Manager::TEXT,
 				'dynamic'     => array(
 					'active'     => true,
@@ -95,7 +95,7 @@ class Video_Widget_Enhancer {
 						TagsModule::URL_CATEGORY,
 					),
 				),
-				'placeholder' => esc_html__( 'Enter your URL (YouTube, Vimeo, Dailymotion, etc.)', 'extend-video-addons' ),
+				'placeholder' => esc_html__( 'Enter your URL (YouTube, Vimeo, Dailymotion, etc.)', 'extend-video-add-ons-for-elementor' ),
 				'label_block' => true,
 				'condition'   => array(
 					'video_type' => 'auto',
@@ -133,8 +133,8 @@ class Video_Widget_Enhancer {
 			$this->force_empty_render( $widget );
 			echo wp_kses_post(
 				$this->get_notice_html(
-					__( 'Video URL required', 'extend-video-addons' ),
-					__( 'Please provide a video URL in the widget settings.', 'extend-video-addons' ),
+					__( 'Video URL required', 'extend-video-add-ons-for-elementor' ),
+					__( 'Please provide a video URL in the widget settings.', 'extend-video-add-ons-for-elementor' ),
 					'warning'
 				)
 			);
@@ -147,8 +147,8 @@ class Video_Widget_Enhancer {
 			$this->force_empty_render( $widget );
 			echo wp_kses_post(
 				$this->get_notice_html(
-					__( 'Unable to detect video source', 'extend-video-addons' ),
-					__( 'Please select the video source manually from the widget settings.', 'extend-video-addons' ),
+					__( 'Unable to detect video source', 'extend-video-add-ons-for-elementor' ),
+					__( 'Please select the video source manually from the widget settings.', 'extend-video-add-ons-for-elementor' ),
 					'danger'
 				)
 			);

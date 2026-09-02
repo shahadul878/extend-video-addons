@@ -4,7 +4,7 @@ Contributors: shahadul878
 Tags: elementor, video, youtube, vimeo, autodetection
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -65,6 +65,9 @@ No. The plugin adds an Auto Detect option to Elementor's Video widget. Existing 
 
 == Changelog ==
 
+= 1.0.2 =
+* Fix text domain to match the WordPress.org slug `extend-video-add-ons-for-elementor`
+
 = 1.0.1 =
 * WordPress.org compatibility: text domain matches plugin slug
 * Extend Elementor's Video widget with hooks instead of replacing it
@@ -79,6 +82,9 @@ No. The plugin adds an Auto Detect option to Elementor's Video widget. Existing 
 * Dynamic content support
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Fixes the text domain so it matches the WordPress.org plugin slug.
 
 = 1.0.1 =
 WordPress.org compatibility update. Auto Detect now extends the core Elementor Video widget instead of replacing it.

@@ -14,3 +14,8 @@ npm-debug.log*
 # Dependencies (if any added later)
 node_modules/
 vendor/
+
+# Release artifacts
+*.zip
+*.tar.gz
+build/

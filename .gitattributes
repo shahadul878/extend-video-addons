@@ -1,0 +1,12 @@
+# Exclude development files from git archive / GitHub source zip.
+.github export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+.distignore export-ignore
+.wordpress-org export-ignore
+README.md export-ignore
+CHANGELOG.md export-ignore
+CONTRIBUTING.md export-ignore
+.editorconfig export-ignore
+.idea export-ignore
+.vscode export-ignore
