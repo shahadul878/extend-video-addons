@@ -1,14 +1,14 @@
 # =============================================================================
-# Extend Video Add-ons for Elementor - Auto Release & Tag
+# Videtect – Auto Video Source for Elementor - Auto Release & Tag
 # =============================================================================
 # Creates a GitHub Release with a plugin zip when you push a version tag.
 #
 # Usage:
-#   1. Update version in extend-video-addons.php and readme.txt (Stable tag).
+#   1. Update version in videtect.php and readme.txt (Stable tag).
 #   2. Update CHANGELOG.md for the new version.
 #   3. Commit, then create and push a tag:
-#      git tag -a v1.0.0 -m "Release 1.0.0"
-#      git push origin v1.0.0
+#      git tag -a v1.0.5 -m "Release 1.0.5"
+#      git push origin v1.0.5
 #   4. This workflow runs and publishes the release with the zip asset.
 #
 # Or run manually: Actions → Release → Run workflow (optional: set version).
@@ -28,7 +28,7 @@ on:
         type: string
 
 env:
-  PLUGIN_SLUG: extend-video-addons
+  PLUGIN_SLUG: videtect
 
 jobs:
   release:
@@ -38,9 +38,6 @@ jobs:
       contents: write
 
     steps:
-      # -----------------------------------------------------------------------
-      # Checkout and resolve version
-      # -----------------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -59,39 +56,30 @@ jobs:
           fi
           echo "Resolved version: ${{ steps.version.outputs.version }}"
 
-      # -----------------------------------------------------------------------
-      # Build plugin zip (installable structure: extend-video-addons/ inside zip)
-      # -----------------------------------------------------------------------
       - name: Build plugin zip
         id: build
         env:
-          PLUGIN_SLUG: extend-video-addons
+          PLUGIN_SLUG: videtect
         run: |
           set -e
           VERSION="${{ steps.version.outputs.version }}"
-          ZIP_NAME="extend-video-addons-${VERSION}.zip"
-          BUILD_DIR="build/extend-video-addons"
+          ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
+          BUILD_DIR="build/${PLUGIN_SLUG}"
           
-          # Create build dir (parent and leaf) so rsync has a destination
           mkdir -p "$BUILD_DIR"
           
-          # Copy plugin files into build dir using .distignore
           rsync -a \
             --exclude-from='.distignore' \
             --exclude='.git' \
             ./ "$BUILD_DIR/"
           
-          # Create zip so that unzip gives extend-video-addons/ folder
           cd build
-          zip -r "../${ZIP_NAME}" extend-video-addons
+          zip -r "../${ZIP_NAME}" "${PLUGIN_SLUG}"
           cd ..
           
           echo "zip_name=${ZIP_NAME}" >> $GITHUB_OUTPUT
           ls -la "${ZIP_NAME}"
 
-      # -----------------------------------------------------------------------
-      # Generate release notes from CHANGELOG
-      # -----------------------------------------------------------------------
       - name: Generate release notes
         id: notes
         run: |
@@ -104,7 +92,7 @@ jobs:
           fi
           
           if [ -z "$BODY" ]; then
-            BODY="**Extend Video Add-ons for Elementor** ${TAG}
+            BODY="**Videtect – Auto Video Source for Elementor** ${TAG}
 
           See [readme.txt](https://github.com/${{ github.repository }}/blob/main/readme.txt) for changelog."
           fi
@@ -112,9 +100,6 @@ jobs:
           echo "$BODY" > release_notes.md
           echo "Release notes generated."
 
-      # -----------------------------------------------------------------------
-      # Create GitHub Release with zip asset
-      # -----------------------------------------------------------------------
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: Extend Video Add-ons for Elementor
+ * Plugin Name: Videtect – Auto Video Source for Elementor
  * Plugin URI: https://github.com/shahadul878/extend-video-addons
  * Description: Adds Auto Detect to the Elementor Video widget so YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted URLs are identified automatically.
- * Version: 1.0.3
+ * Version: 1.0.5
  * Author: H M Shahadul Islam
  * Author URI: https://github.com/shahadul878
- * Text Domain: extend-video-add-ons-for-elementor
+ * Text Domain: videtect
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.4
@@ -15,17 +15,17 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace ExtendVideoAddons;
+namespace Videtect;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'EXTEND_VIDEO_ADDONS_VERSION', '1.0.3' );
-define( 'EXTEND_VIDEO_ADDONS_FILE', __FILE__ );
-define( 'EXTEND_VIDEO_ADDONS_DIR', plugin_dir_path( __FILE__ ) );
-define( 'EXTEND_VIDEO_ADDONS_URL', plugin_dir_url( __FILE__ ) );
-define( 'EXTEND_VIDEO_ADDONS_BASENAME', plugin_basename( __FILE__ ) );
+define( 'VIDETECT_VERSION', '1.0.5' );
+define( 'VIDETECT_FILE', __FILE__ );
+define( 'VIDETECT_DIR', plugin_dir_path( __FILE__ ) );
+define( 'VIDETECT_URL', plugin_dir_url( __FILE__ ) );
+define( 'VIDETECT_BASENAME', plugin_basename( __FILE__ ) );
 
 /**
  * Option name for plugin settings.
@@ -33,7 +33,7 @@ define( 'EXTEND_VIDEO_ADDONS_BASENAME', plugin_basename( __FILE__ ) );
  * @return string
  */
 function get_option_name() {
-	return 'eva_options';
+	return 'videtect_options';
 }
 
 /**
@@ -76,9 +76,9 @@ function admin_notice_missing_elementor() {
 
 	$message = sprintf(
 		/* translators: 1: Plugin name, 2: Elementor */
-		esc_html__( '%1$s requires %2$s to be installed and activated.', 'extend-video-add-ons-for-elementor' ),
-		'<strong>' . esc_html__( 'Extend Video Add-ons for Elementor', 'extend-video-add-ons-for-elementor' ) . '</strong>',
-		'<strong>' . esc_html__( 'Elementor', 'extend-video-add-ons-for-elementor' ) . '</strong>'
+		esc_html__( '%1$s requires %2$s to be installed and activated.', 'videtect' ),
+		'<strong>' . esc_html__( 'Videtect – Auto Video Source for Elementor', 'videtect' ) . '</strong>',
+		'<strong>' . esc_html__( 'Elementor', 'videtect' ) . '</strong>'
 	);
 
 	printf( '<div class="notice notice-error"><p>%s</p></div>', wp_kses_post( $message ) );
@@ -93,8 +93,8 @@ function load_plugin() {
 		return;
 	}
 
-	require_once EXTEND_VIDEO_ADDONS_DIR . 'includes/class-video-source-detector.php';
-	require_once EXTEND_VIDEO_ADDONS_DIR . 'includes/class-video-widget-enhancer.php';
+	require_once VIDETECT_DIR . 'includes/class-video-source-detector.php';
+	require_once VIDETECT_DIR . 'includes/class-video-widget-enhancer.php';
 
 	Video_Widget_Enhancer::instance();
 
@@ -106,21 +106,21 @@ function load_plugin() {
  */
 function enqueue_editor_scripts() {
 	wp_enqueue_script(
-		'extend-video-addons-admin',
-		EXTEND_VIDEO_ADDONS_URL . 'assets/js/admin.js',
+		'videtect-admin',
+		VIDETECT_URL . 'assets/js/admin.js',
 		array( 'jquery', 'elementor-editor' ),
-		EXTEND_VIDEO_ADDONS_VERSION,
+		VIDETECT_VERSION,
 		true
 	);
 
 	wp_localize_script(
-		'extend-video-addons-admin',
-		'extendVideoAddons',
+		'videtect-admin',
+		'videtect',
 		array(
 			'i18n' => array(
 				/* translators: %s: detected video platform name (youtube, vimeo, etc.) */
-				'detected'     => __( 'Video source detected: %s', 'extend-video-add-ons-for-elementor' ),
-				'undetectable' => __( 'Unable to detect video source. Please select manually.', 'extend-video-add-ons-for-elementor' ),
+				'detected'     => __( 'Video source detected: %s', 'videtect' ),
+				'undetectable' => __( 'Unable to detect video source. Please select manually.', 'videtect' ),
 			),
 		)
 	);
@@ -134,7 +134,7 @@ function load_settings_page() {
 		return;
 	}
 
-	require_once EXTEND_VIDEO_ADDONS_DIR . 'includes/class-settings-page.php';
+	require_once VIDETECT_DIR . 'includes/class-settings-page.php';
 	new Settings_Page();
 }
 

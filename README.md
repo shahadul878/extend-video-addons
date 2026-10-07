@@ -1,6 +1,8 @@
-# Extend Video Add-ons for Elementor
+# Videtect – Auto Video Source for Elementor
 
 Enhances the Elementor video widget with automatic video source detection. Paste any supported video URL and the plugin automatically detects the platform—YouTube, Vimeo, Dailymotion, VideoPress, or self-hosted.
+
+This plugin is **not affiliated with Elementor**. "Elementor" is a trademark of its respective owner.
 
 ![WordPress](https://img.shields.io/badge/WordPress-5.0+-blue.svg)
 ![Elementor](https://img.shields.io/badge/Elementor-3.0+-green.svg)
@@ -33,10 +35,10 @@ Enhances the Elementor video widget with automatic video source detection. Paste
 
 ## Installation
 
-1. Upload the `extend-video-addons` folder to `/wp-content/plugins/`
+1. Upload the `videtect` folder to `/wp-content/plugins/`
 2. Activate the plugin through **Plugins** → **Add New** → **Activate**
 3. Ensure Elementor is installed and activated
-4. Configure options in **Settings** → **Extend Video Add-ons** (optional)
+4. Configure options in **Settings** → **Videtect** (optional)
 
 ## Usage
 
@@ -51,7 +53,7 @@ You can always manually select YouTube, Vimeo, Dailymotion, VideoPress, or Self 
 
 ## Settings
 
-Access **Settings** → **Extend Video Add-ons** to:
+Access **Settings** → **Videtect** to:
 
 - View plugin information and compatibility status
 - Configure default behavior (optional)
@@ -66,8 +68,8 @@ Access **Settings** → **Extend Video Add-ons** to:
 
 ## Technical Details
 
-- **Namespace:** `ExtendVideoAddons`
-- **Text Domain:** `extend-video-add-ons-for-elementor`
+- **Namespace:** `Videtect`
+- **Text Domain / Slug:** `videtect`
 - **Widget:** Extends Elementor `video` widget via hooks (does not unregister it)
 - **Hooks:** `elementor/element/video/section_video/before_section_end`, `elementor/widget/before_render_content`
 
@@ -75,21 +77,26 @@ Access **Settings** → **Extend Video Add-ons** to:
 
 Releases are built and published automatically via [GitHub Actions](.github/workflows/release.yml).
 
-1. Update version in `extend-video-addons.php` and `readme.txt` (Stable tag).
+1. Update version in `videtect.php` and `readme.txt` (Stable tag).
 2. Update [CHANGELOG.md](CHANGELOG.md) for the new version.
 3. Commit, then create and push an annotated tag:
    ```bash
-   git tag -a v1.0.0 -m "Release 1.0.0"
-   git push origin v1.0.0
+   git tag -a v1.0.5 -m "Release 1.0.5"
+   git push origin v1.0.5
    ```
-4. The workflow runs on tag push, builds `extend-video-addons-{version}.zip`, and creates a [GitHub Release](https://github.com/shahadul878/extend-video-addons/releases) with the zip attached.
-
-You can also run **Actions → Release → Run workflow** and optionally enter a version.
+4. The workflow builds `videtect-{version}.zip` and creates a [GitHub Release](https://github.com/shahadul878/extend-video-addons/releases).
 
 ## Changelog
 
+### 1.0.5
+- Renamed to Videtect – Auto Video Source for Elementor
+- Text domain / slug: `videtect`
+
+### 1.0.4
+- Renamed for WordPress.org trademark guidelines
+
 ### 1.0.3
-- Text domain matches WordPress.org slug `extend-video-add-ons-for-elementor`
+- Text domain matches plugin slug
 
 ### 1.0.1
 - WordPress.org compatibility (text domain, readme, Tested up to 7.1)
@@ -102,7 +109,6 @@ You can also run **Actions → Release → Run workflow** and optionally enter a
 - Auto source detection
 - Support for all major video platforms
 - Dynamic content support
-- Direct render for auto-detected self-hosted videos
 - Settings page with About section
 
 ## License

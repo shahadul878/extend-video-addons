@@ -2,11 +2,11 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package ExtendVideoAddons
+ * @package Videtect
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-delete_option( 'eva_options' );
+delete_option( 'videtect_options' );

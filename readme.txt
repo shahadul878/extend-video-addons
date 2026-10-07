@@ -1,10 +1,10 @@
-=== Extend Video Add-ons for Elementor ===
+=== Videtect – Auto Video Source for Elementor ===
 
 Contributors: shahadul878
 Tags: elementor, video, youtube, vimeo, autodetection
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 1.0.3
+Stable tag: 1.0.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,9 @@ Auto-detects YouTube, Vimeo, Dailymotion, VideoPress, and self-hosted URLs in th
 
 == Description ==
 
-Extend Video Add-ons for Elementor adds an **Auto Detect** option to Elementor's Video widget. Paste any supported video URL and the plugin identifies the source. You do not need to manually choose YouTube, Vimeo, or Self Hosted.
+**Videtect – Auto Video Source for Elementor** adds an **Auto Detect** option to Elementor's Video widget. Paste any supported video URL and the plugin identifies the source. You do not need to manually choose YouTube, Vimeo, or Self Hosted.
+
+This plugin is not affiliated with Elementor. "Elementor" is a trademark of its respective owner.
 
 = Features =
 
@@ -39,7 +41,7 @@ Extend Video Add-ons for Elementor adds an **Auto Detect** option to Elementor's
 
 == Installation ==
 
-1. Upload the `extend-video-addons` folder to `/wp-content/plugins/`
+1. Upload the `videtect` folder to `/wp-content/plugins/`
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Ensure Elementor is installed and activated
 4. Add a Video widget in Elementor and select "Auto Detect" from Source
@@ -58,6 +60,10 @@ Yes. The plugin fully supports Elementor dynamic content. URLs from ACF fields, 
 
 No. The plugin adds an Auto Detect option to Elementor's Video widget. Existing widgets keep working. When editing, you will see Auto Detect in the Source dropdown.
 
+= Is this an official Elementor plugin? =
+
+No. This is an independent plugin by H M Shahadul Islam. It is not affiliated with, endorsed by, or sponsored by Elementor.
+
 == Screenshots ==
 
 1. Video widget with Auto Detect source selected
@@ -65,11 +71,18 @@ No. The plugin adds an Auto Detect option to Elementor's Video widget. Existing 
 
 == Changelog ==
 
+= 1.0.5 =
+* Rename to Videtect – Auto Video Source for Elementor
+* Text domain / slug: `videtect`
+
+= 1.0.4 =
+* Rename for WordPress.org trademark and distinctiveness guidelines
+
 = 1.0.3 =
-* Fix text domain to match the WordPress.org slug `extend-video-add-ons-for-elementor`
+* Fix text domain to match the plugin slug
 
 = 1.0.1 =
-* WordPress.org compatibility: text domain matches plugin slug
+* WordPress.org compatibility updates
 * Extend Elementor's Video widget with hooks instead of replacing it
 * Update Tested up to WordPress 7.1
 * Localize editor detection messages
@@ -83,8 +96,5 @@ No. The plugin adds an Auto Detect option to Elementor's Video widget. Existing 
 
 == Upgrade Notice ==
 
-= 1.0.3 =
-Fixes the text domain so it matches the WordPress.org plugin slug.
-
-= 1.0.1 =
-WordPress.org compatibility update. Auto Detect now extends the core Elementor Video widget instead of replacing it.
+= 1.0.5 =
+Renamed to Videtect – Auto Video Source for Elementor. Request slug: videtect.

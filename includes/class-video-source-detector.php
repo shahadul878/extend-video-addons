@@ -4,10 +4,10 @@
  *
  * Detects video platform from URL patterns.
  *
- * @package ExtendVideoAddons
+ * @package Videtect
  */
 
-namespace ExtendVideoAddons;
+namespace Videtect;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

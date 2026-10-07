@@ -1,5 +1,5 @@
 /**
- * Extend Video Add-ons for Elementor - Editor JavaScript
+ * Videtect – Auto Video Source for Elementor - Editor JavaScript
  *
  * Shows Auto Detect feedback in the Elementor editor without changing the
  * selected source while Auto Detect is active.
@@ -7,7 +7,7 @@
 (function ($) {
 	'use strict';
 
-	const i18n = (window.extendVideoAddons && window.extendVideoAddons.i18n) ? window.extendVideoAddons.i18n : {
+	const i18n = (window.videtect && window.videtect.i18n) ? window.videtect.i18n : {
 		detected: 'Video source detected: %s',
 		undetectable: 'Unable to detect video source. Please select manually.'
 	};
@@ -84,7 +84,7 @@
 			$videoTypeControl.on('change', function () {
 				const selectedType = $(this).val();
 				if (selectedType && selectedType !== 'auto') {
-					panel.$el.find('.extend-video-addons-detection-message').remove();
+					panel.$el.find('.videtect-detection-message').remove();
 				}
 			});
 		}
@@ -111,10 +111,10 @@
 	}
 
 	function showDetectionMessage(panel, type, message) {
-		panel.$el.find('.extend-video-addons-detection-message').remove();
+		panel.$el.find('.videtect-detection-message').remove();
 
 		const $message = $('<div>', {
-			class: 'extend-video-addons-detection-message extend-video-addons-detection-' + type,
+			class: 'videtect-detection-message videtect-detection-' + type,
 			text: message,
 			css: {
 				padding: '8px 12px',
