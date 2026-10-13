@@ -1,0 +1,259 @@
+name: Deploy to WordPress.org
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to deploy (e.g. 1.0.5)'
+        required: true
+        default: '1.0.5'
+
+env:
+  PLUGIN_SLUG: videtect
+  MAIN_FILE: videtect.php
+  SVN_URL: https://plugins.svn.wordpress.org/videtect/
+  PLUGIN_URL: https://wordpress.org/plugins/videtect/
+
+jobs:
+  deploy:
+    name: Deploy Plugin + Assets to WordPress.org SVN
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install SVN
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Extract changelog from readme.txt
+        id: changelog
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          CHANGELOG=$(awk -v ver="$VERSION" '
+            $0 ~ "^= " ver " =$" { found=1; next }
+            found && /^= [0-9]/ { exit }
+            found && /^\* / { print }
+          ' readme.txt)
+
+          if [ -z "$CHANGELOG" ]; then
+            PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+            if [ -z "$PREVIOUS_TAG" ]; then
+              CHANGELOG=$(git log --pretty=format:"* %s" --reverse)
+            else
+              CHANGELOG=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"* %s" --reverse)
+            fi
+          fi
+
+          {
+            echo "changelog<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update readme.txt stable tag
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          sed -i "s/Stable tag: .*/Stable tag: ${VERSION}/" readme.txt
+
+          if ! grep -q "= ${VERSION} =" readme.txt; then
+            echo "Warning: No changelog entry for version ${VERSION} in readme.txt"
+            exit 1
+          fi
+
+      - name: Update plugin version
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          sed -i "s/^\( \* Version: \)[0-9.]*/\1${VERSION}/" "${{ env.MAIN_FILE }}"
+          sed -i "s/define( 'VIDETECT_VERSION', '[^']*' );/define( 'VIDETECT_VERSION', '${VERSION}' );/" "${{ env.MAIN_FILE }}"
+
+      - name: Create deployment package
+        run: |
+          mkdir -p "/tmp/${{ env.PLUGIN_SLUG }}"
+          rsync -av --exclude-from=.distignore \
+            ./ "/tmp/${{ env.PLUGIN_SLUG }}/"
+
+          cd /tmp
+          zip -r "${{ env.PLUGIN_SLUG }}.zip" "${{ env.PLUGIN_SLUG }}/"
+          mv "${{ env.PLUGIN_SLUG }}.zip" "${{ github.workspace }}/"
+
+      - name: Verify SVN credentials
+        run: |
+          if [ -z "${{ secrets.WPORG_USERNAME }}" ] || [ -z "${{ secrets.WPORG_PASSWORD }}" ]; then
+            echo "❌ WPORG_USERNAME or WPORG_PASSWORD secrets are not set"
+            exit 1
+          fi
+          echo "✅ SVN credentials configured"
+          echo "SVN: ${{ env.SVN_URL }}"
+          echo "Plugin: ${{ env.PLUGIN_URL }}"
+
+      - name: Checkout WordPress.org SVN
+        run: |
+          svn checkout "${{ env.SVN_URL }}" /tmp/svn \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --depth immediates \
+            --no-auth-cache \
+            --non-interactive
+
+          svn update --set-depth infinity /tmp/svn/trunk \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive
+
+          svn update --set-depth infinity /tmp/svn/assets \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive
+
+          svn update --set-depth infinity /tmp/svn/tags/${{ steps.get_version.outputs.version }} \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive || echo "Tag doesn't exist yet"
+
+      - name: Deploy plugin to SVN trunk
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+
+          find /tmp/svn/trunk -mindepth 1 -not -path '*/.svn*' -delete 2>/dev/null || true
+
+          rsync -av --exclude-from=.distignore \
+            ${{ github.workspace }}/ /tmp/svn/trunk/
+
+          cd /tmp/svn
+
+          svn status trunk/ | grep '^?' | sed 's/^?       //' | while IFS= read -r file; do
+            svn add "$file"
+          done
+
+          svn status trunk/ | grep '^!' | sed 's/^!       //' | while IFS= read -r file; do
+            svn rm "$file"
+          done
+
+          echo "SVN trunk status:"
+          svn status trunk/
+
+          svn commit -m "Update trunk to version ${VERSION}" \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive
+
+          echo "✅ Trunk deployed"
+
+      - name: Deploy assets to SVN
+        run: |
+          if [ ! -d ".wordpress-org" ]; then
+            echo "ℹ️ No .wordpress-org/ directory, skipping assets"
+            exit 0
+          fi
+
+          mkdir -p /tmp/svn/assets
+
+          rsync -av --delete \
+            --exclude='README.md' \
+            .wordpress-org/ /tmp/svn/assets/
+
+          cd /tmp/svn
+
+          svn status assets/ | grep '^?' | sed 's/^?       //' | while IFS= read -r file; do
+            svn add "$file"
+          done
+
+          svn status assets/ | grep '^!' | sed 's/^!       //' | while IFS= read -r file; do
+            svn rm "$file"
+          done
+
+          if svn status assets/ | grep -q '[ADMRC]'; then
+            svn commit -m "Update assets for version ${{ steps.get_version.outputs.version }}" \
+              --username ${{ secrets.WPORG_USERNAME }} \
+              --password ${{ secrets.WPORG_PASSWORD }} \
+              --no-auth-cache \
+              --non-interactive
+            echo "✅ Assets deployed"
+          else
+            echo "ℹ️ No asset changes"
+          fi
+
+      - name: Create SVN tag
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          TAG_URL="${{ env.SVN_URL }}tags/${VERSION}"
+          TRUNK_URL="${{ env.SVN_URL }}trunk"
+
+          if svn info "$TAG_URL" \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive >/dev/null 2>&1; then
+            svn delete "$TAG_URL" -m "Remove existing tag ${VERSION} for redeploy" \
+              --username ${{ secrets.WPORG_USERNAME }} \
+              --password ${{ secrets.WPORG_PASSWORD }} \
+              --no-auth-cache \
+              --non-interactive
+          fi
+
+          svn cp "$TRUNK_URL" "$TAG_URL" -m "Tag version ${VERSION}" \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive
+
+          echo "✅ Tag ${VERSION} created"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: ${{ env.PLUGIN_SLUG }}.zip
+          retention-days: 30
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          files: ${{ env.PLUGIN_SLUG }}.zip
+          body: |
+            ## Version ${{ steps.get_version.outputs.version }}
+
+            ### Changelog
+            ${{ steps.changelog.outputs.changelog }}
+
+            ---
+
+            **WordPress.org:** ${{ env.PLUGIN_URL }}
+            **SVN:** ${{ env.SVN_URL }}
+          draft: false
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

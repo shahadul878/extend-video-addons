@@ -1,0 +1,101 @@
+name: Deploy Assets to WordPress.org
+
+on:
+  push:
+    branches: [ master, main ]
+    paths:
+      - '.wordpress-org/**'
+  workflow_dispatch:
+
+env:
+  PLUGIN_SLUG: videtect
+  SVN_URL: https://plugins.svn.wordpress.org/videtect/
+  PLUGIN_URL: https://wordpress.org/plugins/videtect/
+
+jobs:
+  deploy-assets:
+    name: Deploy Assets to WordPress.org SVN
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SVN
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
+      - name: Verify SVN credentials
+        run: |
+          if [ -z "${{ secrets.WPORG_USERNAME }}" ] || [ -z "${{ secrets.WPORG_PASSWORD }}" ]; then
+            echo "❌ WPORG_USERNAME or WPORG_PASSWORD secrets are not set"
+            exit 1
+          fi
+          echo "✅ SVN credentials configured"
+          echo "Plugin slug: ${{ env.PLUGIN_SLUG }}"
+          echo "SVN: ${{ env.SVN_URL }}"
+          echo "Plugin URL: ${{ env.PLUGIN_URL }}"
+
+      - name: Check for assets
+        run: |
+          if [ ! -d ".wordpress-org" ]; then
+            echo "❌ No .wordpress-org/ directory found"
+            echo "Add banners/icons/screenshots under .wordpress-org/ then re-run."
+            exit 1
+          fi
+          echo "Assets found for ${{ env.PLUGIN_SLUG }}:"
+          ls -lh .wordpress-org/
+
+      - name: Checkout WordPress.org SVN assets
+        run: |
+          svn checkout "${{ env.SVN_URL }}" /tmp/svn \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --depth immediates \
+            --no-auth-cache \
+            --non-interactive
+
+          svn update --set-depth infinity /tmp/svn/assets \
+            --username ${{ secrets.WPORG_USERNAME }} \
+            --password ${{ secrets.WPORG_PASSWORD }} \
+            --no-auth-cache \
+            --non-interactive
+
+      - name: Sync assets
+        run: |
+          mkdir -p /tmp/svn/assets
+
+          rsync -av --delete \
+            --exclude='README.md' \
+            .wordpress-org/ /tmp/svn/assets/
+
+          cd /tmp/svn
+
+          # Add new files
+          svn status assets/ | grep '^?' | sed 's/^?       //' | while IFS= read -r file; do
+            svn add "$file"
+          done
+
+          # Remove deleted files
+          svn status assets/ | grep '^!' | sed 's/^!       //' | while IFS= read -r file; do
+            svn rm "$file"
+          done
+
+          echo "SVN status:"
+          svn status assets/
+
+      - name: Commit assets
+        run: |
+          cd /tmp/svn
+
+          if svn status assets/ | grep -q '[ADMRC]'; then
+            svn commit -m "Update plugin assets" \
+              --username ${{ secrets.WPORG_USERNAME }} \
+              --password ${{ secrets.WPORG_PASSWORD }} \
+              --no-auth-cache \
+              --non-interactive
+            echo "✅ Assets deployed successfully"
+          else
+            echo "ℹ️ No asset changes to commit"
+          fi

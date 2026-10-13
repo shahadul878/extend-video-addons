@@ -1,0 +1,115 @@
+name: Update Changelog
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'readme.txt'
+      - 'videtect.php'
+
+env:
+  PLUGIN_SLUG: videtect
+  MAIN_FILE: videtect.php
+  SVN_URL: https://plugins.svn.wordpress.org/videtect/
+  PLUGIN_URL: https://wordpress.org/plugins/videtect/
+
+permissions:
+  contents: write
+
+jobs:
+  update-changelog:
+    name: Update Changelog in readme.txt
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest version from readme.txt
+        id: get_version
+        run: |
+          VERSION=$(grep "Stable tag:" readme.txt | sed 's/Stable tag: //' | tr -d ' ')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+
+      - name: Check if changelog needs update
+        id: check_changelog
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          if grep -q "= ${VERSION} =" readme.txt; then
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "Changelog for version ${VERSION} already exists"
+          else
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "Changelog for version ${VERSION} needs to be added"
+          fi
+
+      - name: Generate changelog entry
+        if: steps.check_changelog.outputs.needs_update == 'true'
+        id: changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"* %s" -20 --reverse)
+          else
+            CHANGELOG=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"* %s" --reverse)
+          fi
+
+          {
+            echo "changelog<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update readme.txt with changelog
+        if: steps.check_changelog.outputs.needs_update == 'true'
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          CHANGELOG="${{ steps.changelog.outputs.changelog }}"
+          DATE=$(date +"%B %d, %Y")
+
+          if grep -q "== Changelog ==" readme.txt; then
+            awk -v ver="$VERSION" -v date="$DATE" -v log="$CHANGELOG" '
+              BEGIN { inserted=0 }
+              {
+                print
+                if (!inserted && $0 == "== Changelog ==") {
+                  print ""
+                  print "= " ver " ="
+                  print "Released: " date
+                  print ""
+                  n = split(log, lines, "\n")
+                  for (i = 1; i <= n; i++) {
+                    if (lines[i] != "") print lines[i]
+                  }
+                  inserted=1
+                }
+              }
+            ' readme.txt > readme.txt.tmp && mv readme.txt.tmp readme.txt
+          else
+            {
+              echo ""
+              echo "== Changelog =="
+              echo ""
+              echo "= ${VERSION} ="
+              echo "Released: ${DATE}"
+              echo ""
+              echo "${CHANGELOG}"
+            } >> readme.txt
+          fi
+
+      - name: Commit changelog update
+        if: steps.check_changelog.outputs.needs_update == 'true'
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add readme.txt
+          git commit -m "docs: Update changelog for version ${{ steps.get_version.outputs.version }} [skip ci]" || exit 0
+          git push

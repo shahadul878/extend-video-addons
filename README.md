@@ -75,16 +75,20 @@ Access **Settings** → **Videtect** to:
 
 ## Releasing
 
-Releases are built and published automatically via [GitHub Actions](.github/workflows/release.yml).
+Releases deploy to WordPress.org SVN and GitHub via [Deploy to WordPress.org](.github/workflows/deploy-to-wordpress-org.yml).
 
-1. Update version in `videtect.php` and `readme.txt` (Stable tag).
+1. Update version in `videtect.php` and `readme.txt` (Stable tag + changelog).
 2. Update [CHANGELOG.md](CHANGELOG.md) for the new version.
 3. Commit, then create and push an annotated tag:
    ```bash
    git tag -a v1.0.5 -m "Release 1.0.5"
    git push origin v1.0.5
    ```
-4. The workflow builds `videtect-{version}.zip` and creates a [GitHub Release](https://github.com/shahadul878/extend-video-addons/releases).
+4. The workflow updates https://plugins.svn.wordpress.org/videtect/, tags the release, builds `videtect.zip`, and creates a [GitHub Release](https://github.com/shahadul878/extend-video-addons/releases).
+
+Plugin page: https://wordpress.org/plugins/videtect/
+
+Required GitHub secrets: `WPORG_USERNAME`, `WPORG_PASSWORD`.
 
 ## Changelog
 
